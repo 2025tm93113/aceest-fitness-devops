@@ -9,7 +9,7 @@ COPY --chown=appuser:appuser app.py programs.py ./
 COPY --chown=appuser:appuser templates ./templates
 
 FROM base AS test
-COPY requirements-dev.txt pyproject.toml .
+COPY requirements-dev.txt pyproject.toml ./
 RUN pip install --no-cache-dir -r requirements-dev.txt
 COPY --chown=appuser:appuser tests ./tests
 COPY --chown=appuser:appuser original ./original
