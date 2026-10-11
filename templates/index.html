@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ACEest Fitness and Gym</title>
+  <style>
+    body { margin:0; background:#1a1a1a; color:white; font-family:Arial,sans-serif; }
+    header { background:#d4af37; color:black; padding:24px; text-align:center; }
+    main { display:flex; gap:24px; padding:24px; flex-wrap:wrap; }
+    aside { background:#252525; padding:20px; flex:1; min-width:220px; }
+    section { flex:3; min-width:250px; }
+    article { border:1px solid #d4af37; padding:20px; margin-bottom:20px; }
+    h2 { color:#d4af37; }
+    select,button { padding:10px; margin-top:12px; max-width:100%; }
+    pre { white-space:pre-wrap; font:inherit; line-height:1.7; }
+    .error { color:#ff8585; }
+  </style>
+</head>
+<body>
+<header><h1>ACEest FUNCTIONAL FITNESS</h1></header>
+<main>
+  <aside>
+    <h2>Client Profile</h2>
+    <form action="/" method="get">
+      <label for="program">Select Program:</label><br>
+      <select id="program" name="program" required>
+        <option value="">Choose a program</option>
+        {% for name in programs %}
+        <option value="{{ name }}" {% if selected == name %}selected{% endif %}>{{ name }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">View Plan</button>
+    </form>
+    <h2>Site Metrics</h2>
+    <p>CAPACITY: {{ metrics.capacity_users }} Users</p>
+    <p>AREA: {{ "{:,}".format(metrics.area_sq_ft) }} sq ft</p>
+    <p>BREAK-EVEN: {{ metrics.break_even_members }} Members</p>
+  </aside>
+  <section>
+    {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+    <article>
+      <h2>Weekly Workout Chart</h2>
+      {% if data %}<pre style="color:{{ data.color }}">{{ data.workout }}</pre>
+      {% else %}<p>Select a profile to view workout</p>{% endif %}
+    </article>
+    <article>
+      <h2>Daily Nutrition Plan (Tamil Nadu Context)</h2>
+      {% if data %}<pre>{{ data.diet }}</pre>
+      {% else %}<p>Select a profile to view diet</p>{% endif %}
+    </article>
+  </section>
+</main>
+</body>
+</html>

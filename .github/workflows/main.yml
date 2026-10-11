@@ -1,0 +1,59 @@
+name: ACEest CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install validation tools
+        run: python -m pip install -r requirements-dev.txt
+      - name: Build and lint
+        run: |
+          python -m compileall -q app.py programs.py tests
+          ruff check app.py programs.py tests
+      - name: Docker image assembly
+        run: |
+          docker build --target runtime -t aceest:runtime .
+          docker build --target test -t aceest:test .
+      - name: Automated tests inside Docker
+        run: docker run --name aceest-tests aceest:test python -m pytest -v --junitxml=reports/junit.xml --cov-report=xml:reports/coverage.xml
+      - name: Collect reports
+        if: always()
+        run: |
+          mkdir -p reports
+          if docker container inspect aceest-tests >/dev/null 2>&1; then
+            docker cp aceest-tests:/app/reports/. reports/ || true
+            docker rm -f aceest-tests
+          fi
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-reports
+          path: reports/
+          if-no-files-found: warn
+      - name: Smoke test runtime
+        run: |
+          docker run -d --name aceest-app aceest:runtime
+          for attempt in $(seq 1 30); do
+            if docker exec aceest-app python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health',timeout=3)"; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs aceest-app
+          exit 1
+      - name: Clean runtime
+        if: always()
+        run: docker rm -f aceest-app || true
