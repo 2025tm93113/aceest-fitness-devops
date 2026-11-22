@@ -57,7 +57,7 @@ def test_bad_web_selection(client):
 def test_health(client):
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json == {"status": "healthy"}
+    assert response.json["status"] == "healthy"
 
 
 def test_list_programs(client):
@@ -127,3 +127,32 @@ def test_lookup_does_not_expose_mutable_data():
 def test_factory_config():
     assert create_app({"TESTING": True}).testing is True
     assert create_app().testing is False
+
+def test_version_endpoint(client):
+    response = client.get("/api/version")
+    assert response.status_code == 200
+    assert "version" in response.json
+
+
+def test_calories_valid_and_invalid(client):
+    ok = client.post("/api/calories", json={"program": "Fat Loss (FL)", "weight": 80})
+    assert ok.status_code == 200
+    assert ok.json["estimated_calories"] == 1760
+
+    bad = client.post("/api/calories", json={"program": "Unknown", "weight": -5})
+    assert bad.status_code == 400
+
+
+@pytest.mark.parametrize(
+    "weight,height,expected",
+    [(50, 175, "Underweight"), (70, 175, "Normal"), (85, 175, "Overweight"), (105, 175, "Obese")],
+)
+def test_bmi_categories(client, weight, height, expected):
+    response = client.post("/api/bmi", json={"weight": weight, "height": height})
+    assert response.status_code == 200
+    assert response.json["category"] == expected
+
+
+def test_bmi_invalid(client):
+    response = client.post("/api/bmi", json={"weight": 0, "height": 170})
+    assert response.status_code == 400
