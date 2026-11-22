@@ -4,11 +4,16 @@ import os
 from flask import Flask, jsonify, render_template, request
 from programs import PROGRAMS, SITE_METRICS
 
-APP_VERSION = os.getenv("APP_VERSION", "2.0")
+APP_VERSION = os.getenv("APP_VERSION", "3.0")
 CALORIE_FACTORS = {
     "Fat Loss (FL)": 22,
     "Muscle Gain (MG)": 35,
     "Beginner (BG)": 26,
+}
+AI_TEMPLATES = {
+    "Fat Loss": "Full Body HIIT + Calorie Deficit",
+    "Muscle Gain": "Push/Pull/Legs Hypertrophy",
+    "Beginner": "Full Body 3x/week + Mobility",
 }
 
 
@@ -100,7 +105,19 @@ def create_app(test_config=None):
         except (TypeError, ValueError):
             return jsonify(error="Valid positive weight and height are required"), 400
         return jsonify(bmi=bmi_val, category=category)
-
+    
+    @app.post("/api/recommend")
+    def recommend_program():
+        payload = request.get_json(silent=True) or {}
+        goal = payload.get("goal", "")
+        if goal not in AI_TEMPLATES:
+            return jsonify(error="Goal must be Fat Loss, Muscle Gain, or Beginner"), 400
+        return jsonify(
+            goal=goal,
+            recommended_plan=AI_TEMPLATES[goal],
+            version=APP_VERSION,
+        )
+    
     @app.errorhandler(404)
     def not_found(error):
         return jsonify(error="Resource not found"), 404

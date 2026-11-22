@@ -156,3 +156,11 @@ def test_bmi_categories(client, weight, height, expected):
 def test_bmi_invalid(client):
     response = client.post("/api/bmi", json={"weight": 0, "height": 170})
     assert response.status_code == 400
+
+def test_recommend_program(client):
+    ok = client.post("/api/recommend", json={"goal": "Muscle Gain"})
+    assert ok.status_code == 200
+    assert "Push/Pull/Legs" in ok.json["recommended_plan"]
+
+    bad = client.post("/api/recommend", json={"goal": "Invalid"})
+    assert bad.status_code == 400
