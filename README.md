@@ -179,6 +179,7 @@ does not trigger Jenkins. This assignment implements automated builds, tests,
 and executable container packaging. It does not publish images to a registry
 or claim automatic production deployment.
 
+
 ## Version control and evidence
 
 Use genuine application, testing, and infrastructure branches with descriptive
