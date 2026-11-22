@@ -1,55 +1,42 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ACEest Fitness and Gym</title>
-  <style>
-    body { margin:0; background:#1a1a1a; color:white; font-family:Arial,sans-serif; }
-    header { background:#d4af37; color:black; padding:24px; text-align:center; }
-    main { display:flex; gap:24px; padding:24px; flex-wrap:wrap; }
-    aside { background:#252525; padding:20px; flex:1; min-width:220px; }
-    section { flex:3; min-width:250px; }
-    article { border:1px solid #d4af37; padding:20px; margin-bottom:20px; }
-    h2 { color:#d4af37; }
-    select,button { padding:10px; margin-top:12px; max-width:100%; }
-    pre { white-space:pre-wrap; font:inherit; line-height:1.7; }
-    .error { color:#ff8585; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ACEest Fitness and Gym | Training Dashboard</title>
+<style>
+:root{--bg:#0c111b;--panel:#151e2d;--line:#29354a;--gold:#efc76d;--text:#eef3fb;--muted:#a8b6cc}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top right,#23314a 0,transparent 45%),var(--bg);color:var(--text);font-family:Segoe UI,Arial,sans-serif;line-height:1.6}
+a{color:inherit}button,select{font:inherit}header{border-bottom:1px solid var(--line);background:#0c111be8;padding:18px 5%}.nav{max-width:1280px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-weight:800;font-size:22px;letter-spacing:2px}.brand span{color:var(--gold)}.tag{color:var(--muted);font-size:13px;border:1px solid var(--line);padding:6px 12px;border-radius:30px}
+main{max-width:1280px;margin:auto;padding:32px 24px 48px}.hero{display:grid;grid-template-columns:2fr 1fr;gap:24px;align-items:center;margin-bottom:28px}.eyebrow{color:var(--gold);font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700}h1{font-size:clamp(28px,4vw,46px);line-height:1.12;margin:12px 0 16px}h2{font-size:19px;margin:0 0 14px}h3{font-size:17px;margin:0 0 8px}p{margin:0 0 14px}.muted{color:var(--muted)}.hero-note,.panel,.stat,.program-card{background:var(--panel);border:1px solid var(--line);border-radius:16px}.hero-note{padding:24px;border-top:3px solid var(--gold)}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}.stat{padding:20px}.stat strong{display:block;font-size:30px;color:var(--gold)}.stat small{color:var(--muted)}.workspace{display:grid;grid-template-columns:300px 1fr;gap:22px}.panel{padding:24px;margin-bottom:20px}.selector label{display:block;font-size:14px;color:var(--muted);margin-bottom:10px}select{width:100%;background:#0c111b;color:var(--text);padding:12px;border:1px solid #52617a;border-radius:9px}button{width:100%;padding:12px;margin:14px 0 18px;border:0;border-radius:9px;background:var(--gold);color:#172033;font-weight:700;cursor:pointer}button:hover{background:#ffda88}a:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid #80baff;outline-offset:3px}.divider{border:0;border-top:1px solid var(--line);margin:20px 0}.steps{padding-left:20px;color:var(--muted);font-size:14px}.steps li{margin-bottom:10px}.label{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}.selected-title{margin:7px 0 18px}.chart-heading{display:flex;align-items:center;gap:12px}.icon{display:inline-grid;place-items:center;background:#233149;border-radius:10px;width:40px;height:40px;color:var(--gold);font-weight:700}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-family:inherit;line-height:1.9;margin:16px 0 0;padding:20px;background:#0c111b;border-radius:12px;border-left:3px solid var(--gold)}.empty{background:#0c111b;padding:22px;border-radius:12px;color:var(--muted);margin-top:16px}.error{padding:14px;border:1px solid #e87979;border-radius:10px;color:#ffc3c3;background:#421e25;margin-bottom:18px}.catalog{margin-top:18px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.program-card{padding:20px;text-decoration:none;display:block;border-top:3px solid var(--accent)}.program-card:hover{border-color:var(--accent);background:#1b273a}.program-card p{font-size:14px;color:var(--muted)}.link-label{color:var(--gold);font-size:14px}.footnote{font-size:12px;color:var(--muted);margin-top:14px}footer{border-top:1px solid var(--line);padding:20px 5%;color:var(--muted);font-size:12px;text-align:center}
+@media(max-width:850px){.hero,.workspace{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.nav{flex-wrap:wrap}.stats{gap:10px}.stat{padding:14px}.stat strong{font-size:24px}}@media(max-width:500px){.stats{grid-template-columns:1fr}main{padding:22px 16px}.panel{padding:18px}.tag{display:none}}
+</style>
 </head>
 <body>
-<header><h1>ACEest FUNCTIONAL FITNESS</h1></header>
+<header><div class="nav"><div class="brand">ACE<span>est</span></div><div class="tag">Fitness &amp; Gym · Training Dashboard</div></div></header>
 <main>
-  <aside>
-    <h2>Client Profile</h2>
-    <form action="/" method="get">
-      <label for="program">Select Program:</label><br>
-      <select id="program" name="program" required>
-        <option value="">Choose a program</option>
-        {% for name in programs %}
-        <option value="{{ name }}" {% if selected == name %}selected{% endif %}>{{ name }}</option>
-        {% endfor %}
-      </select>
-      <button type="submit">View Plan</button>
-    </form>
-    <h2>Site Metrics</h2>
-    <p>CAPACITY: {{ metrics.capacity_users }} Users</p>
-    <p>AREA: {{ "{:,}".format(metrics.area_sq_ft) }} sq ft</p>
-    <p>BREAK-EVEN: {{ metrics.break_even_members }} Members</p>
-  </aside>
-  <section>
-    {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
-    <article>
-      <h2>Weekly Workout Chart</h2>
-      {% if data %}<pre style="color:{{ data.color }}">{{ data.workout }}</pre>
-      {% else %}<p>Select a profile to view workout</p>{% endif %}
-    </article>
-    <article>
-      <h2>Daily Nutrition Plan (Tamil Nadu Context)</h2>
-      {% if data %}<pre>{{ data.diet }}</pre>
-      {% else %}<p>Select a profile to view diet</p>{% endif %}
-    </article>
-  </section>
+<section class="hero" aria-labelledby="page-title">
+<div><div class="eyebrow">Train with purpose</div><h1 id="page-title">ACEest FUNCTIONAL FITNESS</h1><p class="muted">Explore your training program and daily nutrition plan in one place. Choose a profile below to view the original ACEest workout and diet guidance.</p></div>
+<div class="hero-note"><div class="eyebrow">Your training workspace</div><h2 style="margin-top:12px">Three programs. One clear plan.</h2><p class="muted">Fat Loss, Muscle Gain, and Beginner programs, adapted from ACEest version 1.0.</p></div>
+</section>
+<section class="stats" aria-label="Site reference metrics">
+<div class="stat"><div class="label">Facility capacity</div><strong>{{ metrics.capacity_users }} Users</strong><small>CAPACITY · Baseline reference</small></div>
+<div class="stat"><div class="label">Training space</div><strong>{{ "{:,}".format(metrics.area_sq_ft) }} sq ft</strong><small>AREA · Baseline reference</small></div>
+<div class="stat"><div class="label">Break-even target</div><strong>{{ metrics.break_even_members }} Members</strong><small>BREAK-EVEN · Baseline reference</small></div>
+</section>
+<div class="workspace">
+<aside>
+<div class="panel selector"><div class="eyebrow">Client Profile</div><h2 style="margin-top:10px">Find your program</h2><form action="/" method="get"><label for="program">Select Program:</label><select id="program" name="program" required><option value="">Choose a program</option>{% for name in programs %}<option value="{{ name }}" {% if selected == name %}selected{% endif %}>{{ name }}</option>{% endfor %}</select><button type="submit">View Plan</button></form><hr class="divider"><h3>How to use this page</h3><ol class="steps"><li>Select a training profile.</li><li>Review the workout chart.</li><li>Read the accompanying nutrition plan.</li></ol><p class="footnote">The site metrics above are reference values from the instructor's application, not live occupancy or membership counts.</p></div>
+</aside>
+<section aria-label="Program details">
+{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+<div class="label">{% if data %}Selected program{% else %}Program overview{% endif %}</div><h2 class="selected-title">{% if data %}{{ selected }}{% else %}Your plan starts here{% endif %}</h2>
+<article class="panel"><div class="chart-heading"><span class="icon" aria-hidden="true">W</span><h2 style="margin:0">Weekly Workout Chart</h2></div>{% if data %}<pre style="color:{{ data.color }}">{{ data.workout }}</pre>{% else %}<div class="empty">Select a profile to view workout</div>{% endif %}</article>
+<article class="panel"><div class="chart-heading"><span class="icon" aria-hidden="true">N</span><h2 style="margin:0">Daily Nutrition Plan (Tamil Nadu Context)</h2></div>{% if data %}<pre>{{ data.diet }}</pre>{% else %}<div class="empty">Select a profile to view diet</div>{% endif %}<p class="footnote">Original program guidance shown for this coursework demonstration. Not a personalized nutrition prescription.</p></article>
+</section>
+</div>
+<section class="catalog" aria-labelledby="catalog-title"><div class="eyebrow">Explore the programs</div><h2 id="catalog-title" style="margin-top:8px">Choose a focus</h2><div class="cards">{% for name, info in programs.items() %}<a class="program-card" style="--accent:{{ info.color }}" href="{{ url_for('home', program=name) }}"><h3>{{ name }}</h3><p>View the original workout chart and nutrition plan for this profile.</p><span class="link-label">Open program &rarr;</span></a>{% endfor %}</div></section>
 </main>
+<footer>ACEest Fitness &amp; Gym · Flask adaptation of version 1.0 · Academic DevOps demonstration</footer>
 </body>
 </html>

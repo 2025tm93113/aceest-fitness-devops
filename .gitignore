@@ -8,3 +8,4 @@ reports/
 htmlcov/
 .env
 .DS_Store
+credentials
